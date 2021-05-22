@@ -1,7 +1,38 @@
 import numpy as np
-import LP
 
 np.set_printoptions(precision=2)
+
+class LinearProg:
+    """
+    A class to store a linear program.
+
+    Attributes
+    ----------
+    num_eq : int
+    num_var : int
+    LHS : matrix of size num_eq x num_var
+    RHS : vector of size num_eq
+
+    The LP is of the form LHS x <= RHS.
+    """
+    
+    def print(self):
+        'Prints equations.'
+        for i in range(self.num_eq):
+            for j in range(self.num_var - 1):
+                print (str(self.LHS[i][j]) + '*x_' + str(j), end = ' + ')
+            print (str(self.LHS[i][self.num_var - 1]) + '*x_' + str(self.num_var - 1), end = ' <= ')
+            print (self.RHS[i])
+                
+    def __init__(self, LHS: np.array, RHS: np.array):
+        if len(LHS) != len(RHS):
+            # improve the type check here
+            print ("Error: Number of rows of A (LHS) does not match the number of rows of b (RHS).")
+            return
+        self.LHS = LHS              # matrix A of size m x n
+        self.RHS = RHS              # vector b of length n
+        self.num_eq = len(LHS)      # number of equations
+        self.num_var = len(LHS[0])  # number of variables
 
 class LinearProgAlgo:
     """
@@ -14,7 +45,7 @@ class LinearProgAlgo:
     
     """
     @classmethod
-    def fourier_motzkin (cls, lp: LP.LinearProg):
+    def fourier_motzkin (cls, lp: LinearProg):
         'Runs fourier_motzkin algorithm on lp.'
         print("Received the following LinearProgram: ")
         lp.print()
@@ -46,7 +77,7 @@ class LinearProgAlgo:
         return False
 
     @classmethod
-    def fourier_motzkin_step (cls, lp: LP.LinearProg, n: int):
+    def fourier_motzkin_step (cls, lp: LinearProg, n: int):
         'Eliminates a single variable.'
         print("---------------------------------")
         print("Eliminating variable x_" + str(n))
@@ -105,4 +136,9 @@ class LinearProgAlgo:
 
         return lp
     
-
+l1 = LinearProg([[2, -5, 4],
+                 [3, -6, 3],
+                 [-1, 5, -2],
+                 [-3, 2, 6]],
+                [10, 9, -7, 12])
+print(LinearProgAlgo.fourier_motzkin(l1))
