@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class LinearProgStandard:
+class SimplexMethod:
     """
     A class to store a linear program.
 
@@ -23,7 +23,7 @@ class LinearProgStandard:
             print (str(self.A[i][self.num_var - 1]) + '*x_' + str(self.num_var - 1), end = ' <= ')
             print (self.b[i])
                 
-    def __init__(self, A: np.array, b: np.array):
+    def __init__(self, A: np.array, b: np.array, cost: np.array):
         if len(A) != len(b):
             # improve the type check here
             print ("Error: Number of rows of A does not match the number of rows of b.")
@@ -32,3 +32,8 @@ class LinearProgStandard:
         self.b = b              # vector b of length n
         self.num_eq = len(A)      # number of equations
         self.num_var = len(A[0])  # number of variables
+
+    def reduced_cost_naive(self, basic_columns: np.array, index: int):
+        B = self.A[:, basic_columns]
+        cB = self.cost[basic_columns]
+        reduced_cost = self.cost[index] - np.matmul(cB, np.matmul(np.linalg.inv(B), self.A[:, index]))

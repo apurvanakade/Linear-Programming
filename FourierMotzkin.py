@@ -2,7 +2,7 @@ import numpy as np
 
 np.set_printoptions(precision=2)
 
-class LinearProg:
+class LP:
     """
     A class to store a linear program.
 
@@ -21,8 +21,8 @@ class LinearProg:
         for i in range(self.num_eq):
             for j in range(self.num_var - 1):
                 print (str(self.LHS[i][j]) + '*x_' + str(j), end = ' + ')
-            print (str(self.LHS[i][self.num_var - 1]) + '*x_' + str(self.num_var - 1), end = ' <= ')
-            print (self.RHS[i])
+                print (str(self.LHS[i][self.num_var - 1]) + '*x_' + str(self.num_var - 1), end = ' <= ')
+                print (self.RHS[i])
                 
     def __init__(self, LHS: np.array, RHS: np.array):
         if len(LHS) != len(RHS):
@@ -34,24 +34,15 @@ class LinearProg:
         self.num_eq = len(LHS)      # number of equations
         self.num_var = len(LHS[0])  # number of variables
 
-class LinearProgAlgo:
-    """
-    A class for linear prorgamming algorithms.
-
-    Methods
-    -------
-    fourier_motzkin
-    fourier_motzkin_step
-    
-    """
-    @classmethod
-    def fourier_motzkin (cls, lp: LinearProg):
-        'Runs fourier_motzkin algorithm on lp.'
-        print("Received the following LinearProgram: ")
+    def fourier_motzkin (self):
+        lp = self
+        
+        'Running Fourier-Motzkin algorithm on lp.'
+        print("Running Fourier-Motzkin algorithm on the following linear program: ")
         lp.print()
 
         for i in range(lp.num_var - 1):
-            lp = cls.fourier_motzkin_step(lp, lp.num_var - 1)
+            lp = self.fourier_motzkin_step(lp, lp.num_var - 1)
             if lp.num_eq == 0:
                 print("Number of equations reduced to 0.")
                 return True
@@ -93,10 +84,6 @@ class LinearProgAlgo:
                 pos_coeff.append([i, lp.LHS[i][n]])
             else:
                 neg_coeff.append([i, lp.LHS[i][n]])
-                
-        # print ("Rows with null coefficients:", nul_coeff)
-        # print ("Rows with positive coefficients:", pos_coeff)
-        # print ("Rows with negative coefficients:", neg_coeff)
 
         # Normalize rows with positive and negative coefficients
         for coeff in pos_coeff:
@@ -106,12 +93,10 @@ class LinearProgAlgo:
             lp.LHS[coeff[0]] = [x/-coeff[1] for x in lp.LHS[coeff[0]]]
             lp.RHS[coeff[0]] = lp.RHS[coeff[0]]/-coeff[1]
 
-        # print("---------------------------------")
-        # print("After normalizing")
-        # lp.print()
-
         new_LHS = []
         new_RHS = []
+
+        # Add rows with null coefficients unmodified
         for row in nul_coeff:
             new_LHS.append(lp.LHS[row])
             new_RHS.append(lp.RHS[row])
@@ -136,9 +121,9 @@ class LinearProgAlgo:
 
         return lp
     
-l1 = LinearProg([[2, -5, 4],
-                 [3, -6, 3],
-                 [-1, 5, -2],
-                 [-3, 2, 6]],
-                [10, 9, -7, 12])
-print(LinearProgAlgo.fourier_motzkin(l1))
+lp = LP([[2, -5, 4],
+         [3, -6, 3],
+         [-1, 5, -2],
+         [-3, 2, 6]],
+        [10, 9, -7, 12])
+print(lp.fourier_motzkin())
