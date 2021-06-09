@@ -196,15 +196,3 @@ simplex = SimplexMethod(lp, basis_columns=[3, 4, 5])
 simplex.solve()
 
 simplex.print_solution()
-
-# lp.print()
-
-# lp = SimplexMethod(
-#     [[2, -5, 4, 2], [3, -6, 3, 3], [-1, 5, -2, -1]],
-#     [10, 9, -7],
-#     [1, 2, 3, 4],
-#     [0, 1, 2],
-# )
-# # lp.print()
-# test = lp.reduced_cost_naive(3)
-# print(str(test))
